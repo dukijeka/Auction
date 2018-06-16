@@ -46,11 +46,13 @@ namespace Auction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Image,Duration,StartingPrice,CreatedOn,OppenedOn,ClosedOn,State")] AuctionsModel.Auction auction)
+        public ActionResult Create([Bind(Include = "Name,Duration,StartingPrice")] AuctionsModel.Auction auction, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
                 auction.ID = Guid.NewGuid();
+                auction.CreatedOn = DateTime.UtcNow;
+                auction.State = "READY";
                 db.Auctions.Add(auction);
                 db.SaveChanges();
                 return RedirectToAction("Index");
