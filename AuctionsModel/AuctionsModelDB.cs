@@ -5,9 +5,9 @@ namespace AuctionsModel
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
-    public partial class AuctionsModel : DbContext
+    public partial class AuctionsModelDB : DbContext
     {
-        public AuctionsModel()
+        public AuctionsModelDB()
             : base("name=AuctionsModelConfig")
         {
         }

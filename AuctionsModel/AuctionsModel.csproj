@@ -54,7 +54,7 @@
     <Compile Include="AspNetUserClaim.cs" />
     <Compile Include="AspNetUserLogin.cs" />
     <Compile Include="Auction.cs" />
-    <Compile Include="AuctionsModel.cs" />
+    <Compile Include="AuctionsModelDB.cs" />
     <Compile Include="Bid.cs" />
     <Compile Include="C__MigrationHistory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
