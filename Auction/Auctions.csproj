@@ -202,6 +202,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShowImage.ashx.cs">
+      <DependentUpon>ShowImage.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -315,6 +318,7 @@
     <Content Include="Views\Auctions\Details.cshtml" />
     <Content Include="Views\Auctions\Edit.cshtml" />
     <Content Include="Views\Auctions\Index.cshtml" />
+    <Content Include="ShowImage.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -48,11 +48,16 @@ namespace Auction.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Name,Duration,StartingPrice")] AuctionsModel.Auction auction, HttpPostedFileBase image)
         {
-            if (ModelState.IsValid)
+            auction.ID = Guid.NewGuid();
+            auction.CreatedOn = DateTime.UtcNow;
+            auction.State = "READY";
+            if (image != null)
             {
-                auction.ID = Guid.NewGuid();
-                auction.CreatedOn = DateTime.UtcNow;
-                auction.State = "READY";
+                auction.Image = new byte[image.ContentLength];
+                image.InputStream.Read(auction.Image, 0, image.ContentLength);
+            }
+            if (ModelState.IsValid)
+            { 
                 db.Auctions.Add(auction);
                 db.SaveChanges();
                 return RedirectToAction("Index");

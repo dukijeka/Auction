@@ -34,7 +34,7 @@ namespace AuctionsModel
 
         public DateTime ClosedOn { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(20)]
         public string State { get; set; }
 
