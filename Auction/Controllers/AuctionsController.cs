@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using AuctionsModel;
+using ImageUtilities;
 
 namespace Auction.Controllers
 {
@@ -51,13 +55,16 @@ namespace Auction.Controllers
             auction.ID = Guid.NewGuid();
             auction.CreatedOn = DateTime.UtcNow;
             auction.State = "READY";
-            if (image != null)
+            if (image != null && image.IsImage())
             {
-                auction.Image = new byte[image.ContentLength];
-                image.InputStream.Read(auction.Image, 0, image.ContentLength);
+                //auction.Image = new byte[image.ContentLength];
+                //image.InputStream.Read(auction.Image, 0, image.ContentLength);
+                auction.Image = image.CreateThumbnail(100, 100);
             }
+
+
             if (ModelState.IsValid)
-            { 
+            {
                 db.Auctions.Add(auction);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -131,5 +138,9 @@ namespace Auction.Controllers
             }
             base.Dispose(disposing);
         }
+
+       
+
+
     }
 }

@@ -270,7 +270,9 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -338,6 +340,10 @@
     <ProjectReference Include="..\AuctionsModel\AuctionsModel.csproj">
       <Project>{a569218b-65ea-48d2-a26b-1af532603ff8}</Project>
       <Name>AuctionsModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageUtilities\ImageUtilities.csproj">
+      <Project>{e769ba88-5fd2-4989-acf3-49ebfefaa5ed}</Project>
+      <Name>ImageUtilities</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
