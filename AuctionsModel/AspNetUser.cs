@@ -41,9 +41,11 @@ namespace AuctionsModel
 
         public int AccessFailedCount { get; set; }
 
-        [Required]
         [StringLength(256)]
         public string UserName { get; set; }
+
+        [Required]
+        public int TokenBalance { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }

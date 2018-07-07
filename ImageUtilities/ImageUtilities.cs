@@ -228,6 +228,14 @@ namespace ImageUtilities
             ImageConverter converter = new ImageConverter();
             return (byte[])converter.ConvertTo(bmpOut, typeof(byte[]));
         }
+        public static byte[] ImageToByteArray(this System.Drawing.Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, imageIn.RawFormat);
+                return ms.ToArray();
+            }
+        }
     }
 
    

@@ -82,7 +82,7 @@ namespace Auction.Controllers
                 auction.Image = new byte[image.ContentLength];
                 image.InputStream.Read(auction.Image, 0, image.ContentLength);
                 //auction.Image = image.CreateThumbnail(150, 150);
-            }
+            } 
 
 
             if (ModelState.IsValid)

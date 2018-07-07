@@ -193,6 +193,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuctionsController.cs" />
+    <Compile Include="Controllers\BidsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -208,6 +209,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Resources\imageNotAvailable.png" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -322,10 +324,13 @@
     <Content Include="Views\Auctions\Index.cshtml" />
     <Content Include="ShowImage.ashx" />
     <Content Include="Views\Auctions\AdminPanel.cshtml" />
+    <Content Include="Views\Bids\Create.cshtml" />
+    <Content Include="Views\Bids\Delete.cshtml" />
+    <Content Include="Views\Bids\Details.cshtml" />
+    <Content Include="Views\Bids\Edit.cshtml" />
+    <Content Include="Views\Bids\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />

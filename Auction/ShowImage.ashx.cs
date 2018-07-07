@@ -28,6 +28,10 @@ namespace Auction
             context.Response.ContentType = "image/jpeg";
             Stream strm = ShowAuctionImage(auctionNo);
             byte[] buffer = new byte[4096];
+            if (strm == null)
+            {
+                return;
+            }
             int byteSeq = strm.Read(buffer, 0, 4096);
 
             while (byteSeq > 0)
