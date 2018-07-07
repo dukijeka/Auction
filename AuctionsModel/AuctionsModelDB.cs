@@ -7,11 +7,15 @@ namespace AuctionsModel
 
     public partial class AuctionsModelDB : DbContext
     {
+        //public AuctionsModelDB()
+        //    : base("name=AuctionsModelConfig")
+        //{
+        //}
+
         public AuctionsModelDB()
-            : base("name=AuctionsModelConfig")
+        : base("name=DefaultConnection")
         {
         }
-
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }

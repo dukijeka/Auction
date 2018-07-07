@@ -18,8 +18,30 @@ namespace Auction.Controllers
     {
         private AuctionsModelDB db = new AuctionsModelDB();
 
+        public AuctionsController()
+        {
+        }
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if(!User.IsInRole("Admin"))
+            {
+                ViewBag.DisplayAdminPanel = "hidden";
+            }
+            else
+            {
+                ViewBag.DisplayAdminPanel = "visible";
+            }
+        }
+
         // GET: Auctions
         public ActionResult Index()
+        {
+            return View(db.Auctions.ToList());
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminPanel()
         {
             return View(db.Auctions.ToList());
         }
@@ -57,9 +79,9 @@ namespace Auction.Controllers
             auction.State = "READY";
             if (image != null && image.IsImage())
             {
-                //auction.Image = new byte[image.ContentLength];
-                //image.InputStream.Read(auction.Image, 0, image.ContentLength);
-                auction.Image = image.CreateThumbnail(100, 100);
+                auction.Image = new byte[image.ContentLength];
+                image.InputStream.Read(auction.Image, 0, image.ContentLength);
+                //auction.Image = image.CreateThumbnail(150, 150);
             }
 
 
@@ -130,6 +152,24 @@ namespace Auction.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult OpenAuction(Guid id)
+        {
+            AuctionsModel.Auction auction = db.Auctions.Find(id);
+            auction.State = "OPENED";
+            auction.OppenedOn = DateTime.UtcNow;
+            db.SaveChanges();
+            return RedirectToAction("Index", db.Auctions.ToList());
+        }
+
+        public ActionResult CloseAuction(Guid id)
+        {
+            AuctionsModel.Auction auction = db.Auctions.Find(id);
+            auction.State = "CLOSED";
+            auction.ClosedOn = DateTime.UtcNow;
+            db.SaveChanges();
+            return RedirectToAction("Index", db.Auctions.ToList());
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -138,6 +178,7 @@ namespace Auction.Controllers
             }
             base.Dispose(disposing);
         }
+
 
        
 

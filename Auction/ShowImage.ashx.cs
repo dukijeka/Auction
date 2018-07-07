@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using ImageUtilities;
 
 namespace Auction
 {
@@ -14,7 +15,8 @@ namespace Auction
     /// </summary>
     public class ShowImage : IHttpHandler
     {
-
+        public static int WIDTH = 300;
+        public static int HEIGHT = 300;
         public void ProcessRequest(HttpContext context)
         {
             String auctionNo;
@@ -48,7 +50,7 @@ namespace Auction
             object img = cmd.ExecuteScalar();
             try
             {
-                return new MemoryStream((byte[])img);
+                return new MemoryStream(((byte[])img).CreateThumbnail(WIDTH, HEIGHT));
             }
             catch(Exception e)
             {

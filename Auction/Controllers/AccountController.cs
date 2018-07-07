@@ -22,6 +22,18 @@ namespace Auction.Controllers
         {
         }
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (!User.IsInRole("Admin"))
+            {
+                ViewBag.DisplayAdminPanel = "hidden";
+            }
+            else
+            {
+                ViewBag.DisplayAdminPanel = "visible";
+            }
+        }
+
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;
