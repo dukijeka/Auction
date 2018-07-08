@@ -35,34 +35,84 @@ namespace Auction.Controllers
         }
 
         // GET: Auctions
-        public ActionResult Index()
+        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED")
         {
             var auctions = db.Auctions.ToList();
 
             List<ViewModels.AuctionBid> auctionsBids = new List<ViewModels.AuctionBid>();
 
+            int shownAuctions = 0;
+
+            if (state == "")
+            {
+                state = "OPENED";
+            }
+
             foreach (var auction in auctions)
             {
-                if (auction.State == "OPENED") { 
-                    ViewModels.AuctionBid auctionBid = new ViewModels.AuctionBid();
-                    auctionBid.AuctionID = auction.ID;
-                    auctionBid.AuctionName = auction.Name;
-                    auctionBid.Duration = auction.Duration;
-                    auctionBid.OppenedOn = auction.OppenedOn;
+                shownAuctions++;
+                if (shownAuctions > 10)
+                {
+                    break;
+                }
 
-                    Bid latestBid = auction.GetLatestBid();
+                Bid latestBid = auction.GetLatestBid();
 
-                    if (latestBid != null) { 
-                        auctionBid.price = latestBid.TokensOffered;
-                        auctionBid.UserID = latestBid.UserID;
-                        auctionBid.UserName = latestBid.AspNetUser.UserName;
-                    } else
+                decimal latestOffer = latestBid == null ? auction.StartingPrice : latestBid.TokensOffered;
+
+                if (minOffer != null && latestOffer < minOffer)
+                {
+                    continue;
+                }
+
+                if (maxOffer != null && latestOffer > maxOffer)
+                {
+                    continue;
+                }
+
+               
+                if (name != "")
+                {
+                    bool somethingMatched = false;
+
+                    foreach (string keyword in name.Split(' '))
                     {
-                        auctionBid.price = (int) auction.StartingPrice;
+                        if (auction.Name.ToLower().Contains(keyword.ToLower())) {
+                            somethingMatched = true;
+                            break;
+                        }
                     }
 
-                    auctionsBids.Add(auctionBid);
+                    if (!somethingMatched)
+                    {
+                        continue;
+                    }
                 }
+
+                if (auction.State != state) {
+                        continue;
+                }
+
+                ViewModels.AuctionBid auctionBid = new ViewModels.AuctionBid();
+                auctionBid.AuctionID = auction.ID;
+                auctionBid.AuctionName = auction.Name;
+                auctionBid.Duration = auction.Duration;
+                auctionBid.OppenedOn = auction.OppenedOn;
+                auctionBid.State = auction.State;
+                
+
+                if (latestBid != null)
+                {
+                    auctionBid.price = latestBid.TokensOffered;
+                    auctionBid.UserID = latestBid.UserID;
+                    auctionBid.UserName = latestBid.AspNetUser.UserName;
+                }
+                else
+                {
+                    auctionBid.price = (int)auction.StartingPrice;
+                }
+
+                auctionsBids.Add(auctionBid);
             }
             //return View(db.Auctions.ToList());
             return View(auctionsBids);

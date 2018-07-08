@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using AuctionsModel;
 using ImageUtilities;
 
 namespace Auction
@@ -44,14 +45,16 @@ namespace Auction
 
         public Stream ShowAuctionImage(string auctionNo)
         {
-            string conn = ConfigurationManager.ConnectionStrings[1].ConnectionString;
-            SqlConnection connection = new SqlConnection(conn);
-            string sql = "SELECT Image FROM dbo.Auction WHERE ID = @ID";
-            SqlCommand cmd = new SqlCommand(sql, connection);
-            cmd.CommandType = CommandType.Text;
-            cmd.Parameters.AddWithValue("@ID", auctionNo);
-            connection.Open();
-            object img = cmd.ExecuteScalar();
+            //string conn = ConfigurationManager.ConnectionStrings[1].ConnectionString;
+            //SqlConnection connection = new SqlConnection(conn);
+            //string sql = "SELECT Image FROM dbo.Auction WHERE ID = @ID";
+            //SqlCommand cmd = new SqlCommand(sql, connection);
+            //cmd.CommandType = CommandType.Text;
+            //cmd.Parameters.AddWithValue("@ID", auctionNo);
+            //connection.Open();
+            //object img = cmd.ExecuteScalar();
+            AuctionsModelDB db = new AuctionsModelDB();
+            object img = db.Auctions.Find(Guid.Parse(auctionNo)).Image;
             try
             {
                 return new MemoryStream(((byte[])img).CreateThumbnail(WIDTH, HEIGHT));
@@ -62,7 +65,7 @@ namespace Auction
             }
             finally
             {
-                connection.Close();
+               // connection.Close();
             }
         }
 

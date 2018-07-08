@@ -52,6 +52,7 @@ namespace Auction.Controllers
         //public ActionResult Create([Bind(Include = "UserID,AuctionID,TimeOfBidding,TokensOffered")] Bid bid)
         public ActionResult Create(String userID, Guid auctionID, String tokkensOffered)
         {
+            // crate bid
             Bid bid = new Bid();
             bid.UserID = userID;
             bid.AspNetUser = db.AspNetUsers.Find(userID);
@@ -59,6 +60,25 @@ namespace Auction.Controllers
             bid.Auction = db.Auctions.Find(auctionID);
             bid.TimeOfBidding = DateTime.UtcNow;
             bid.TokensOffered = Int32.Parse(tokkensOffered);
+
+            // check if the user has enough tokens
+            if (bid.AspNetUser.TokenBalance < Int32.Parse(tokkensOffered))
+            {
+                ViewBag.Error = "You don't have anough Tokens!";
+                return View(db.Auctions.ToList());
+            }
+
+            // withdraw tokens
+            bid.AspNetUser.TokenBalance -= Int32.Parse(tokkensOffered);
+
+            // refund the last bidder(if exists)
+            Bid lastBid = db.Auctions.Find(auctionID).GetLatestBid();
+
+            if (lastBid != null)
+            {
+                lastBid.AspNetUser.TokenBalance += lastBid.TokensOffered;
+            }
+
             if (ModelState.IsValid)
             {
                 db.Bids.Add(bid);
