@@ -50,7 +50,7 @@ namespace Auction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "UserID,AuctionID,TimeOfBidding,TokensOffered")] Bid bid)
-        public ActionResult Create(String userID, Guid auctionID, String tokkensOffered)
+        public ActionResult Create(String userID, Guid auctionID, String tokensOffered)
         {
             // crate bid
             Bid bid = new Bid();
@@ -59,20 +59,20 @@ namespace Auction.Controllers
             bid.AuctionID = auctionID;
             bid.Auction = db.Auctions.Find(auctionID);
             bid.TimeOfBidding = DateTime.UtcNow;
-            bid.TokensOffered = Int32.Parse(tokkensOffered);
+            bid.TokensOffered = Int32.Parse(tokensOffered);
 
             // check if the user has enough tokens
-            if (bid.AspNetUser.TokenBalance < Int32.Parse(tokkensOffered))
+            if (bid.AspNetUser.TokenBalance < Int32.Parse(tokensOffered))
             {
                 ViewBag.Error = "You don't have anough Tokens!";
-                return View(db.Auctions.ToList());
+                return View("Index");
             }
-
-            // withdraw tokens
-            bid.AspNetUser.TokenBalance -= Int32.Parse(tokkensOffered);
 
             // refund the last bidder(if exists)
             Bid lastBid = db.Auctions.Find(auctionID).GetLatestBid();
+
+            // withdraw tokens
+            bid.AspNetUser.TokenBalance -= Int32.Parse(tokensOffered);
 
             if (lastBid != null)
             {
@@ -83,6 +83,9 @@ namespace Auction.Controllers
             {
                 db.Bids.Add(bid);
                 db.SaveChanges();
+
+                // alert other users
+                Hubs.AuctionNotificaionsHub.UpdateClientAuctions(auctionID.ToString(), Int32.Parse(tokensOffered), bid.AspNetUser.UserName);
                 return RedirectToAction("Index");
             }
 

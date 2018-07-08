@@ -8,7 +8,7 @@
 
 <h2>Auctions</h2>
 
-<h3>Search:</h3>
+<h4>Search:</h4>
 
 <form action="/Auctions" method="get" class="form-inline">
     Auction Name: &nbsp; &nbsp;
@@ -56,10 +56,14 @@
                 <p class="card-img"><img src="/ShowImage.ashx?id=@item.AuctionID" alt="ImageNotAvailable" /></p>
                 <p class="card-text" id="timer @item.AuctionID"></p>
                 <p class="card-text">State: @item.State</p>
-                <p class="card-text">@item.price</p>
+                <p class="card-text" id="price @item.AuctionID">@item.price</p>
                 @if (item.UserName != null)
                 {
-                    <p class="card-text">@item.UserName</p>
+                    <p class="card-text" id="user @item.AuctionID">@item.UserName</p>
+                }
+                else
+                {
+                    <p class="card-text" id="user @item.AuctionID"></p>
                 }
                 @using (Html.BeginForm("Create", "Bids"))
                 {
@@ -69,13 +73,13 @@
                     <input type="hidden" name="auctionID" value="@item.AuctionID" />
                     if (item.price == null)
                     {
-                        <input type="number" name="tokkensOffered" value="1" class="form-control" /> <br /> <br />
+                        <input type="number" name="tokkensOffered" value="1" class="form-control" id="offerInput @item.AuctionID"/> <br /> <br />
                     }
                     else
                     {
-                        <input type="number" name="tokkensOffered" value="@(item.price + 1)" min="@(item.price + 1)" class="form-control" /> <br /> <br />
+                        <input type="number" name="tokensOffered" value="@(item.price + 1)" min="@(item.price + 1)" id="offerInput @item.AuctionID" class="form-control" /> <br /> <br />
                     }
-                    if (item.State == "OPENED")
+                    if (item.State == "OPENED" && Request.IsAuthenticated)
                     {
                         <button class="btn btn-primary" type="submit" id="bidButton @item.AuctionID">Bid Now</button>
                     }
@@ -94,6 +98,20 @@
 
 @section scripts {
     <script>
+
+        $.connection.hub.start();
+
+        $.connection.auctionNotificaionsHub.client.updateAuction = function (updateData) {
+            //alert("" + updateData.auctionID + " " + updateData.newBidAmount + " " + updateData.userPosted);
+            document.getElementById("user " + updateData.auctionID).innerHTML = updateData.userPosted;
+            document.getElementById("price " + updateData.auctionID).innerHTML = updateData.newBidAmount;
+            document.getElementById("price " + updateData.auctionID).className += " bg-danger text-white";
+            var offerInput = $("offerInput " + updateData.auctionID);
+            offerInput.attr('value', "" + Number(updateData.newBidAmount) + 1);
+            offerInput.attr('min', "" + Number(updateData.newBidAmount) + 1);
+            //document.getElementById("offerInput " + updateData.auctionID).val = Number(updateData.newBidAmount) + 1;
+            //document.getElementById("offerInput " + updateData.auctionID).min = Number(updateData.newBidAmount) + 1;
+        };
 
         function sqlToJsDate(sqlDate) {
             //debugger;
