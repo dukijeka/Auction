@@ -5,6 +5,7 @@ namespace AuctionsModel
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using System.Linq;
 
     [Table("Auction")]
     public partial class Auction
@@ -40,5 +41,16 @@ namespace AuctionsModel
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Bid> Bids { get; set; }
+
+        public Bid GetLatestBid()
+        {
+            if (Bids.Count == 0)
+            {
+                return null;
+            }
+
+            Bid latestBid = Bids.OrderByDescending(x => x.TimeOfBidding).FirstOrDefault();
+            return latestBid;
+        }
     }
 }

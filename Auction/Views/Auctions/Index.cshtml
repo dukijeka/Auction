@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity;
-@model IEnumerable<AuctionsModel.Auction>
+@model IEnumerable<Auction.ViewModels.AuctionBid>
   
 
 @{
@@ -22,20 +22,31 @@
         <div class="card bg-secondary">
             <div class="card-body">
                 @*<h4 class="card-title">@Html.ActionLink(item.Name, "Details", item.ID)</h4>*@
-                <h4 class="card-title"><a href="Auctions/Details/@item.ID">@item.Name</a></h4>
-                <p class="card-img"><img src="/ShowImage.ashx?id=@item.ID" alt="ImageNotAvailable"/></p>
-                <p class="card-text" id="timer @item.ID"></p>
-                <p class="card-text">6.00$</p>
-                <p class="card-text">lastBidder</p>
-                @using(Html.BeginForm("Create", "Bids")) {
-                    @Html.AntiForgeryToken()
-                    
-                    <input type="hidden" name="userID" value="@User.Identity.GetUserId()" />
-                    <input type="hidden" name="auctionID" value="@item.ID" />
-                    <input type="number" name="tokkensOffered" value="1"/> <br /> <br />
-                    <button class="btn btn-primary" type="submit" id="bidButton @item.ID">Bid Now</button>
+                <h4 class="card-title"><a href="Auctions/Details/@item.AuctionID">@item.AuctionName</a></h4>
+                <p class="card-img"><img src="/ShowImage.ashx?id=@item.AuctionID" alt="ImageNotAvailable" /></p>
+                <p class="card-text" id="timer @item.AuctionID"></p>
+                <p class="card-text">@item.price</p>
+                @if (item.UserName != null)
+                {
+                    <p class="card-text">@item.UserName</p>
                 }
-                
+                @using (Html.BeginForm("Create", "Bids"))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="userID" value="@User.Identity.GetUserId()" />
+                    <input type="hidden" name="auctionID" value="@item.AuctionID" />
+                    if (item.price == null)
+                    {
+                        <input type="number" name="tokkensOffered" value="1" /> <br /> <br />
+                    }
+                    else
+                    {
+                        <input type="number" name="tokkensOffered" value="@(item.price + 1)" min="@(item.price + 1)"/> <br /> <br />
+                    }
+                    <button class="btn btn-primary" type="submit" id="bidButton @item.AuctionID">Bid Now</button>
+                }
+
             </div>
         </div>
 
@@ -47,11 +58,11 @@
 
         function sqlToJsDate(sqlDate) {
             //debugger;
-        //sqlDate in SQL DATETIME format ("dd/mm/YYY hh:mm:ss [AM/PM]")
+        //sqlDate in SQL DATETIME format ("mm/dd/YYY hh:mm:ss [AM/PM]")
         var sqlDateArr1 = sqlDate.split("/");
-        //format of sqlDateArr1[] = ['dd','mm','YYYY hh:mm:ss [AM/PM']]
-        var sDay = sqlDateArr1[0];
-        var sMonth = (Number(sqlDateArr1[1]) - 1).toString();
+        //format of sqlDateArr1[] = ['mm','dd','YYYY hh:mm:ss [AM/PM']]
+        var sDay = sqlDateArr1[1];
+        var sMonth = (Number(sqlDateArr1[0]) - 1).toString();
         var sqlDateArr2 = sqlDateArr1[2].split(" ");
         //format of sqlDateArr2[] = ['YYYY', 'hh:mm:ss', ['AM/PM']]
         var sYear = sqlDateArr2[0];
@@ -115,7 +126,7 @@
         {
             <text>
 
-       // document.getElementById("timer @item.ID").innerHTML = countDownDate;
+        @*document.getElementById("timer @item.AuctionID").innerHTML = countDownDate;*@
               
             </text>
         }
@@ -123,8 +134,7 @@
 
     @foreach (var item in Model)
     {
-        if (item.State == "OPENED")
-        {
+       
 		    <text>
                 var countDownDate = sqlToJsDate("@item.OppenedOn.AddSeconds(item.Duration)");
                         //console.log(oppenedOn);
@@ -132,15 +142,15 @@
         
 
                 @*var countDownDate = new Date(oppenedOn.getTime() + @item.Duration * 1000).getTime();*@
-                @*console.log("outside method. Results: ")
+                console.log("outside method. Results: ")
                 console.log("Original date: " + "@item.OppenedOn");
                 console.log("Duration: " + "@item.Duration");
                 console.log("converted date" + String(countDownDate));
-                console.log("Now: " + String(new Date()));*@
+                console.log("Now: " + String(new Date()));
 
-                timer("@item.ID", countDownDate);
+                timer("@item.AuctionID", countDownDate);
             </text>  
-        }
+        
     }
 
             

@@ -37,7 +37,35 @@ namespace Auction.Controllers
         // GET: Auctions
         public ActionResult Index()
         {
-            return View(db.Auctions.ToList());
+            var auctions = db.Auctions.ToList();
+
+            List<ViewModels.AuctionBid> auctionsBids = new List<ViewModels.AuctionBid>();
+
+            foreach (var auction in auctions)
+            {
+                if (auction.State == "OPENED") { 
+                    ViewModels.AuctionBid auctionBid = new ViewModels.AuctionBid();
+                    auctionBid.AuctionID = auction.ID;
+                    auctionBid.AuctionName = auction.Name;
+                    auctionBid.Duration = auction.Duration;
+                    auctionBid.OppenedOn = auction.OppenedOn;
+
+                    Bid latestBid = auction.GetLatestBid();
+
+                    if (latestBid != null) { 
+                        auctionBid.price = latestBid.TokensOffered;
+                        auctionBid.UserID = latestBid.UserID;
+                        auctionBid.UserName = latestBid.AspNetUser.UserName;
+                    } else
+                    {
+                        auctionBid.price = (int) auction.StartingPrice;
+                    }
+
+                    auctionsBids.Add(auctionBid);
+                }
+            }
+            //return View(db.Auctions.ToList());
+            return View(auctionsBids);
         }
 
         [Authorize(Roles = "Admin")]
