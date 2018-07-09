@@ -35,9 +35,15 @@ namespace Auction.Controllers
         }
 
         // GET: Auctions
-        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED")
+        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED", string error = "")
         {
+
+
+                ViewBag.Error = error;
+            
+
             var auctions = db.Auctions.ToList();
+
 
             List<ViewModels.AuctionBid> auctionsBids = new List<ViewModels.AuctionBid>();
 

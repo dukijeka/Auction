@@ -39,12 +39,14 @@
     </p>
 }
 
-@if (ViewBag.Error != null)
+@if (ViewBag.Error != null && ViewBag.Error != "")
 {
     <div class="alert alert-danger">
         <strong>Error!</strong> @ViewBag.Error
     </div>
 }
+
+
 
 <div class="card-columns">
     @foreach (var item in Model)
@@ -81,7 +83,7 @@
                     }
                     if (item.State == "OPENED" && Request.IsAuthenticated)
                     {
-                        <button class="btn btn-primary" type="submit" id="bidButton @item.AuctionID">Bid Now</button>
+                        <button class="btn btn-primary" type="submit" id="bidButton @item.AuctionID" onclick="">Bid Now</button>
                     }
                     else
                     {
@@ -98,6 +100,8 @@
 
 @section scripts {
     <script>
+
+        
 
         $.connection.hub.start();
 

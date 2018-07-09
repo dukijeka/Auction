@@ -65,18 +65,35 @@ namespace Auction.Controllers
             if (bid.AspNetUser.TokenBalance < Int32.Parse(tokensOffered))
             {
                 ViewBag.Error = "You don't have anough Tokens!";
-                return View("Index");
+                return RedirectToAction("Index", "Auctions");
             }
+
 
             // refund the last bidder(if exists)
             Bid lastBid = db.Auctions.Find(auctionID).GetLatestBid();
 
-            // withdraw tokens
-            bid.AspNetUser.TokenBalance -= Int32.Parse(tokensOffered);
+                // withdraw tokens
+                bid.AspNetUser.TokenBalance -= Int32.Parse(tokensOffered);
 
             if (lastBid != null)
             {
                 lastBid.AspNetUser.TokenBalance += lastBid.TokensOffered;
+
+                // check if the new bid is greater than the last
+                if (bid.TokensOffered <= lastBid.TokensOffered)
+                {
+                    ViewBag.Error = "A new bid must be greater than the last one!";
+                    return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the last one!" });
+                }
+            } else
+            {
+                // check if the new bid is greater than the intila price
+                if (bid.TokensOffered <= lastBid.TokensOffered)
+                {
+
+                    return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the minimal price!" });
+
+                }
             }
 
             if (ModelState.IsValid)
@@ -86,7 +103,7 @@ namespace Auction.Controllers
 
                 // alert other users
                 Hubs.AuctionNotificaionsHub.UpdateClientAuctions(auctionID.ToString(), Int32.Parse(tokensOffered), bid.AspNetUser.UserName);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Auctions");
             }
 
             ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", bid.UserID);
