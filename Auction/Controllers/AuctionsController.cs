@@ -8,6 +8,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using System.Web.UI.WebControls;
 using AuctionsModel;
 using ImageUtilities;
@@ -39,7 +40,7 @@ namespace Auction.Controllers
         {
 
 
-                ViewBag.Error = error;
+            ViewBag.Error = error;
             
 
             var auctions = db.Auctions.ToList();
@@ -57,7 +58,7 @@ namespace Auction.Controllers
             foreach (var auction in auctions)
             {
                 shownAuctions++;
-                if (shownAuctions > 10)
+                if (shownAuctions > Settings.GlobalSettings.N)
                 {
                     break;
                 }
@@ -154,13 +155,23 @@ namespace Auction.Controllers
         // POST: Auctions/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Duration,StartingPrice")] AuctionsModel.Auction auction, HttpPostedFileBase image)
+        public ActionResult Create([Bind(Include = "Name,StartingPrice")] AuctionsModel.Auction auction, HttpPostedFileBase image, int? duration)
         {
             auction.ID = Guid.NewGuid();
             auction.CreatedOn = DateTime.UtcNow;
             auction.State = "READY";
+
+            if (duration != null)
+            {
+                auction.Duration = (int) duration;
+            } else
+            {
+                auction.Duration = Settings.GlobalSettings.D;
+            }
+
             if (image != null && image.IsImage())
             {
                 auction.Image = new byte[image.ContentLength];
@@ -236,6 +247,7 @@ namespace Auction.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult OpenAuction(Guid id)
         {
             AuctionsModel.Auction auction = db.Auctions.Find(id);
@@ -247,10 +259,16 @@ namespace Auction.Controllers
 
         public ActionResult CloseAuction(Guid id)
         {
+            
             AuctionsModel.Auction auction = db.Auctions.Find(id);
-            auction.State = "CLOSED";
-            auction.ClosedOn = DateTime.UtcNow;
-            db.SaveChanges();
+
+            // close only if the auction has expiered or if the user is admin
+            if (auction.OppenedOn.AddSeconds(auction.Duration) >= DateTime.UtcNow || Roles.IsUserInRole("Admin"))
+            {
+                auction.State = "CLOSED";
+                auction.ClosedOn = DateTime.UtcNow;
+                db.SaveChanges(); 
+            }
             return RedirectToAction("Index", db.Auctions.ToList());
         }
 

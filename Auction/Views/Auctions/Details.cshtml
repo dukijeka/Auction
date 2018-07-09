@@ -23,7 +23,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Image)
+            <img src="/ShowImage.ashx?id=@Model.ID" alt="ImageNotAvailable" />
         </dd>
 
         <dt>
@@ -74,9 +74,45 @@
             @Html.DisplayFor(model => model.State)
         </dd>
 
+
     </dl>
 </div>
+
+
+<table class="table">
+    <tr>
+        <th>
+            UserName
+        </th>
+        <th>
+            Tokens Offered
+        </th>
+        <th>
+            Time
+        </th>
+        <th></th>
+    </tr>
+
+    <h4>Bids:</h4>
+    @foreach (var bid in Model.Bids)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => bid.AspNetUser.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => bid.TokensOffered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => bid.TimeOfBidding)
+            </td>
+        </tr>
+    }
+
+</table>
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |*@
     @Html.ActionLink("Back to List", "Index")
 </p>
+
