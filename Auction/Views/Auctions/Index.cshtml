@@ -57,7 +57,7 @@
                 <h4 class="card-title"><a href="Auctions/Details/@item.AuctionID">@item.AuctionName</a></h4>
                 <p class="card-img"><img src="/ShowImage.ashx?id=@item.AuctionID" alt="ImageNotAvailable" /></p>
                 <p class="card-text" id="timer @item.AuctionID"></p>
-                <p class="card-text">State: @item.State</p>
+                <p class="card-text" id="state @item.AuctionID">State: @item.State</p>
                 <p class="card-text" id="price @item.AuctionID">@item.price</p>
                 @if (item.UserName != null)
                 {
@@ -116,6 +116,10 @@
             //document.getElementById("offerInput " + updateData.auctionID).val = Number(updateData.newBidAmount) + 1;
             //document.getElementById("offerInput " + updateData.auctionID).min = Number(updateData.newBidAmount) + 1;
         };
+
+        $.connection.auctionNotificaionsHub.client.closeAuction = function (auctionID) {
+            document.getElementById("state " + auctionID).innerHTML = "CLOSED";
+        }
 
         function sqlToJsDate(sqlDate) {
             //debugger;
@@ -176,7 +180,9 @@
                         clearInterval(x);
                         document.getElementById("timer " + id).innerHTML = "ENDED";
                         document.getElementById("bidButton " + id).className += " disabled";
-                        document.getElementById("bidButton " + id).disabled = true;                    }
+                        document.getElementById("bidButton " + id).disabled = true;
+                        $.connection.auctionNotificaionsHub.server.auctionCloseRequest(id);
+                    }
                 }, 1000);
         }
 

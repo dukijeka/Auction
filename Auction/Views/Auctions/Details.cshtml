@@ -35,11 +35,18 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.StartingPrice)
+            Current Price
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.StartingPrice)
+            @if (Model.GetLatestBid() != null)
+            {
+                <span id="price @Model.ID">@Model.GetLatestBid().TokensOffered</span>
+            }
+            else
+            {
+                <span id="price @Model.ID">@Model.StartingPrice</span>
+            }
         </dd>
 
         <dt>
@@ -71,7 +78,30 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.State)
+            <span id="state @Model.ID">@Model.State</span>
+        </dd>
+
+        <dt>
+            Last Bidder
+        </dt>
+
+        <dd>
+            @if (Model.GetLatestBid() != null)
+            {
+                <span id="user @Model.ID"> @Model.GetLatestBid().AspNetUser.UserName;</span>
+            }
+            else
+            {
+                <text> <span id="user @Model.ID"> - </span> </text>
+            }
+        </dd>
+
+        <dt>
+            Time Left
+        </dt>
+
+        <dd>
+            <span id="timer @Model.ID"></span>
         </dd>
 
 
@@ -116,3 +146,82 @@
     @Html.ActionLink("Back to List", "Index")
 </p>
 
+@section scripts {
+    <script>
+
+    $.connection.hub.start();
+
+    $.connection.auctionNotificaionsHub.client.updateAuction = function (updateData) {
+        //alert("" + updateData.auctionID + " " + updateData.newBidAmount + " " + updateData.userPosted);
+        document.getElementById("user " + updateData.auctionID).innerHTML = updateData.userPosted;
+        document.getElementById("price " + updateData.auctionID).innerHTML = updateData.newBidAmount;
+        document.getElementById("price " + updateData.auctionID).className += " bg-danger text-white";
+        };
+
+        $.connection.auctionNotificaionsHub.client.closeAuction = function (auctionID) {
+            document.getElementById("state " + auctionID).innerHTML = "CLOSED";
+        }
+
+    function sqlToJsDate(sqlDate) {
+        //debugger;
+        //sqlDate in SQL DATETIME format ("mm/dd/YYY hh:mm:ss [AM/PM]")
+        var sqlDateArr1 = sqlDate.split("/");
+        //format of sqlDateArr1[] = ['mm','dd','YYYY hh:mm:ss [AM/PM']]
+        var sDay = sqlDateArr1[1];
+        var sMonth = (Number(sqlDateArr1[0]) - 1).toString();
+        var sqlDateArr2 = sqlDateArr1[2].split(" ");
+        //format of sqlDateArr2[] = ['YYYY', 'hh:mm:ss', ['AM/PM']]
+        var sYear = sqlDateArr2[0];
+        var sqlDateArr3 = sqlDateArr2[1].split(":");
+        //format of sqlDateArr3[] = ['hh','mm','ss']
+        var sHour = sqlDateArr3[0];
+        var sMinute = sqlDateArr3[1];
+        var sSecond = sqlDateArr3[2];
+        if (sqlDateArr2[2] == "PM") {
+            sHour = "" + (Number(sHour) + 12);
+        }
+        var convertedDate = new Date(sYear, sMonth, sDay, sHour, sMinute, sSecond, 0);
+        console.log("Inside method:");
+        console.log("original date: " + sqlDate);
+
+        console.log("converted Date: " + convertedDate);
+        return convertedDate;
+
+        // return new Date(sYear, sMonth, sDay, sHour, sMinute, sSecond, 0);
+
+    }
+
+        // Update the count down every 1 second
+        var x = setInterval(function () {
+
+            // Get local date and time
+            var localTime = new Date();
+
+            // convert it to UTC date and time
+            var now = new Date(localTime.getUTCFullYear(), localTime.getUTCMonth(), localTime.getUTCDate(),
+                localTime.getUTCHours(), localTime.getUTCMinutes(), localTime.getUTCSeconds(), localTime.getUTCMilliseconds());
+
+            // Find the distance between now an the count down date
+            var distance = sqlToJsDate("@Model.OppenedOn.AddSeconds(Model.Duration)").getTime() - now.getTime();
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the element
+            document.getElementById("timer @Model.ID").innerHTML = days + "d " + hours + "h "
+                + minutes + "m " + seconds + "s ";
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                debugger;
+                clearInterval(x);
+                document.getElementById("timer @Model.ID").innerHTML = "ENDED";
+                $.connection.auctionNotificaionsHub.server.auctionCloseRequest(id);
+            }
+        }, 1000);
+
+    </script>
+}

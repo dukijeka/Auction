@@ -57,6 +57,12 @@ namespace Auction.Controllers
 
             foreach (var auction in auctions)
             {
+                // if the auction has expiered, close it
+                if (auction.OppenedOn.AddSeconds(auction.Duration) <= DateTime.UtcNow && auction.State == "OPENED")
+                {
+                    CloseAuction(auction.ID);
+                }
+
                 shownAuctions++;
                 if (shownAuctions > Settings.GlobalSettings.N)
                 {
@@ -259,12 +265,14 @@ namespace Auction.Controllers
 
         public ActionResult CloseAuction(Guid id)
         {
-            
+
             AuctionsModel.Auction auction = db.Auctions.Find(id);
 
             // close only if the auction has expiered or if the user is admin
-            if (auction.OppenedOn.AddSeconds(auction.Duration) >= DateTime.UtcNow || Roles.IsUserInRole("Admin"))
+            if ((auction.OppenedOn.AddSeconds(auction.Duration) <= DateTime.UtcNow || (User != null && User.IsInRole("Admin")))
+                && auction.State == "OPENED")
             {
+
                 auction.State = "CLOSED";
                 auction.ClosedOn = DateTime.UtcNow;
                 db.SaveChanges(); 
