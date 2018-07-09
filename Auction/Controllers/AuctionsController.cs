@@ -128,13 +128,24 @@ namespace Auction.Controllers
                 auctionsBids.Add(auctionBid);
             }
             //return View(db.Auctions.ToList());
-            return View(auctionsBids);
+            return View(auctionsBids.OrderBy(a => a.OppenedOn.AddSeconds(a.Duration)).ToList());
         }
 
         [Authorize(Roles = "Admin")]
         public ActionResult AdminPanel()
         {
-            return View(db.Auctions.ToList());
+            var auctions = db.Auctions.ToList();
+
+            foreach (var auction in auctions)
+            {
+                // if the auction has expiered, close it
+                if (auction.OppenedOn.AddSeconds(auction.Duration) <= DateTime.UtcNow && auction.State == "OPENED")
+                {
+                    CloseAuction(auction.ID);
+                }
+            }
+
+            return View(auctions);
         }
 
         // GET: Auctions/Details/5

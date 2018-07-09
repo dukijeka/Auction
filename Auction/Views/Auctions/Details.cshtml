@@ -177,7 +177,7 @@
         var sHour = sqlDateArr3[0];
         var sMinute = sqlDateArr3[1];
         var sSecond = sqlDateArr3[2];
-        if (sqlDateArr2[2] == "PM") {
+        if (sqlDateArr2[2] == "PM" && sHour != "12") {
             sHour = "" + (Number(sHour) + 12);
         }
         var convertedDate = new Date(sYear, sMonth, sDay, sHour, sMinute, sSecond, 0);
@@ -219,7 +219,7 @@
                 debugger;
                 clearInterval(x);
                 document.getElementById("timer @Model.ID").innerHTML = "ENDED";
-                $.connection.auctionNotificaionsHub.server.auctionCloseRequest(id);
+                $.connection.auctionNotificaionsHub.server.auctionCloseRequest("@Model.ID");
             }
         }, 1000);
 
