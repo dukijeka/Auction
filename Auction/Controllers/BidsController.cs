@@ -9,7 +9,8 @@ using System.Web.Mvc;
 using AuctionsModel;
 
 namespace Auction.Controllers
-{
+{   
+    [Authorize]
     public class BidsController : Controller
     {
         private AuctionsModelDB db = new AuctionsModelDB();
