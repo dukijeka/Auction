@@ -23,6 +23,7 @@ namespace AuctionsModel
         [StringLength(256)]
         public string Email { get; set; }
 
+        public string Name { get; set; }
         public bool EmailConfirmed { get; set; }
 
         public string PasswordHash { get; set; }

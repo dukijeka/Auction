@@ -16,6 +16,8 @@ namespace Auction.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        //public string Name { get;set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

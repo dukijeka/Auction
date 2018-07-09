@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Auction.Models;
+using AuctionsModel;
 
 namespace Auction.Controllers
 {
@@ -15,6 +16,8 @@ namespace Auction.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+
+        private AuctionsModelDB db = new AuctionsModelDB();
 
         public ManageController()
         {
@@ -333,6 +336,41 @@ namespace Auction.Controllers
             }
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
+        }
+
+        [HttpPost]
+        public ActionResult ChangeName(string newName)
+        {
+            AspNetUser currentUser = db.AspNetUsers.Find(User.Identity.GetUserId());
+
+            currentUser.Name = newName;
+
+            db.SaveChanges();
+
+            ViewBag.StatusMessage = "Sucess!";
+            return View("Index");
+        }
+
+        [HttpPost]
+        public ActionResult ChangeEmail(string newEmail)
+        {
+            AspNetUser currentUser = db.AspNetUsers.Find(User.Identity.GetUserId());
+
+            var query = db.AspNetUsers.Where(x => x.UserName == newEmail).ToList();
+
+            if (query.Count != 0)
+            {
+                ViewBag.ErrorMessage = "The user with this email already exists!";
+                return View("Index");
+            }
+
+            // else
+            currentUser.Email = newEmail;
+            currentUser.UserName = newEmail;
+            db.SaveChanges();
+
+            ViewBag.StatusMessage = "Sucess!";
+            return View("Index");
         }
 
         protected override void Dispose(bool disposing)

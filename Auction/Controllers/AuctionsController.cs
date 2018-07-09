@@ -118,7 +118,7 @@ namespace Auction.Controllers
                 {
                     auctionBid.price = latestBid.TokensOffered;
                     auctionBid.UserID = latestBid.UserID;
-                    auctionBid.UserName = latestBid.AspNetUser.UserName;
+                    auctionBid.Name = latestBid.AspNetUser.Name;
                 }
                 else
                 {
