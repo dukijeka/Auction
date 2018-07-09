@@ -1,0 +1,28 @@
+﻿@model AuctionsModel.TokenOrder
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+Select package:
+
+@using (@Html.BeginForm("Create", "TokenOrders", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <select name="package">
+        <option>Silver</option>
+        <option>Gold</option>
+        <option>Platinum</option>
+    </select>
+    <input type="submit"  class="btn btn-success" value="Place Your Order" />
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script type="text/javascript" src="https://stage.centili.com/widget/js/c-mobile-payment-scripts.js"></script>
 </head>
 <body style="background-color: gray">
     <nav class="navbar navbar-expand-sm navbar-dark fixed-top bg-dark">
@@ -19,6 +20,7 @@
                     <li class="nav-item">@Html.ActionLink("About", "About", "Home", new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("Contact", "Contact", "Home", new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("View Auctions", "Index", new { controller = "Auctions" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Token Orders", "Index", new { controller = "TokenOrders" }, new { @class = "nav-link" })</li>
                     <div style="visibility: @ViewBag.DisplayAdminPanel">
                         <li class="nav-item">@Html.ActionLink("Admin Panel", "AdminPanel", new { controller = "Auctions" }, new { @class = "nav-link" })</li>
                     </div>

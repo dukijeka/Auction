@@ -202,6 +202,7 @@
     <Compile Include="Controllers\BidsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\TokenOrdersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -341,6 +342,11 @@
     <Content Include="Views\Bids\Details.cshtml" />
     <Content Include="Views\Bids\Edit.cshtml" />
     <Content Include="Views\Bids\Index.cshtml" />
+    <Content Include="Views\TokenOrders\Create.cshtml" />
+    <Content Include="Views\TokenOrders\Delete.cshtml" />
+    <Content Include="Views\TokenOrders\Details.cshtml" />
+    <Content Include="Views\TokenOrders\Edit.cshtml" />
+    <Content Include="Views\TokenOrders\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
