@@ -26,40 +26,35 @@ namespace Auction.Controllers
         }
 
         public ActionResult Index()
-        {   
-            return View();
+        {
+            //return View();
+            return RedirectToAction("Index", "Auctions");
         }
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            //ViewBag.Message = "Your application description page.";
 
-            if (!User.IsInRole("Admin"))
-            {
-                ViewBag.DisplayLInk = "hidden";
-            }
-            else
-            {
-                ViewBag.DisplayLInk = "visible";
-            }
-
-            return View();
+            //return View();
+            return RedirectToAction("Index", "Auctions");
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            //ViewBag.Message = "Your contact page.";
 
-            if (!User.IsInRole("Admin"))
-            {
-                ViewBag.DisplayLInk = "hidden";
-            }
-            else
-            {
-                ViewBag.DisplayLInk = "visible";
-            }
+            //if (!User.IsInRole("Admin"))
+            //{
+            //    ViewBag.DisplayLInk = "hidden";
+            //}
+            //else
+            //{
+            //    ViewBag.DisplayLInk = "visible";
+            //}
 
-            return View();
+            //return View();
+
+            return RedirectToAction("Index", "Auctions");
         }
     }
 }

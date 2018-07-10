@@ -96,7 +96,7 @@ namespace Auction.Controllers
             if (package == "Gold")
             {
                 tokenCount = Settings.GlobalSettings.G;
-            } else if (package == "silver")
+            } else if (package == "Silver")
             {
                 tokenCount = Settings.GlobalSettings.S;
             } else

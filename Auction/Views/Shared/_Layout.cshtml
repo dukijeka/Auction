@@ -16,9 +16,9 @@
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
 
                 <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { @class = "nav-link" })</li>
+                    @*<li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("About", "About", "Home", new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Contact", "Contact", "Home", new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Contact", "Contact", "Home", new { @class = "nav-link" })</li>*@
                     <li class="nav-item">@Html.ActionLink("View Auctions", "Index", new { controller = "Auctions" }, new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("Token Orders", "Index", new { controller = "TokenOrders" }, new { @class = "nav-link" })</li>
                     <div style="visibility: @ViewBag.DisplayAdminPanel">
@@ -34,7 +34,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Dusan Milosevic</p>
         </footer>
     </div>
     @Scripts.Render("~/bundles/jquery")
