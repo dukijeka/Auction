@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuctionsModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,13 +8,15 @@ using System.Web.Http;
 
 namespace Auction.Controllers
 {
-    public class ProcessPaymentController : ApiController
+    public class MobilePaymentApiController : ApiController
     {
+
+        private AuctionsModelDB db = new AuctionsModelDB();
 
         // GET api/<controller>
         public IEnumerable<string> Get()
         {
-            return new string[] { "success" };
+            return new string[] { "value1", "value2" };
         }
 
         // GET api/<controller>/5
@@ -22,6 +25,17 @@ namespace Auction.Controllers
             return "value";
         }
 
+        public string Get(string clientid, string status)
+        {
+            TokenOrder tokenOrder;
+
+            tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
+            tokenOrder.State = "clientID";
+            db.SaveChanges();
+
+            return clientid;
+
+        }
         // POST api/<controller>
         public void Post([FromBody]string value)
         {

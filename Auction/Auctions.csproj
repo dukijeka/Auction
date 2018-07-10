@@ -212,7 +212,7 @@
     <Compile Include="Controllers\BidsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\ProcessPaymentController.cs" />
+    <Compile Include="Controllers\MobilePaymentApiController.cs" />
     <Compile Include="Controllers\TokenOrdersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

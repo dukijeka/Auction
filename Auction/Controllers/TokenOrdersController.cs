@@ -67,17 +67,7 @@ namespace Auction.Controllers
         //    return View(tokenOrder);
         //}
 
-        public void ProcessPayment(string clientid, string status)
-        {
-            TokenOrder tokenOrder;
-           
-            tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
-            tokenOrder.State = "clientID";
-            db.SaveChanges();
-            
-
-            
-        }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]

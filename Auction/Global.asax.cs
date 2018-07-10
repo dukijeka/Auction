@@ -14,9 +14,9 @@ namespace Auction
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            RegisterGlobalFilters(GlobalFilters.Filters);
+           // RegisterGlobalFilters(GlobalFilters.Filters);
             WebApiConfig.Register(GlobalConfiguration.Configuration);
-            RegisterRoutes(RouteTable.Routes);
+           // RegisterRoutes(RouteTable.Routes);
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
