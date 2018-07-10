@@ -8,6 +8,13 @@
 
 <h2>Auctions</h2>
 
+@if (User.Identity.IsAuthenticated && ViewBag.User != null)
+{
+    <text>
+        Token Balance: @ViewBag.User.TokenBalance
+    </text>
+}
+
 <h4>Search:</h4>
 
 <form action="/Auctions" method="get" class="form-inline">

@@ -12,15 +12,33 @@ using Microsoft.AspNet.Identity;
 
 namespace Auction.Controllers
 {
+    [Authorize]
     public class TokenOrdersController : Controller
     {
         private AuctionsModelDB db = new AuctionsModelDB();
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (!User.IsInRole("Admin"))
+            {
+                ViewBag.DisplayAdminPanel = "hidden";
+            }
+            else
+            {
+                ViewBag.DisplayAdminPanel = "visible";
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.User = db.AspNetUsers.Find(User.Identity.GetUserId());
+            }
+        }
+
 
         // GET: TokenOrders
         public ActionResult Index()
         {
             var tokenOrders = db.TokenOrders.Include(t => t.AspNetUser);
-            ViewBag.Guid = new Guid().ToString();
             return View(tokenOrders.ToList());
         }
 
@@ -36,7 +54,7 @@ namespace Auction.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Guid = new Guid().ToString();
+            
             return View(tokenOrder);
         }
 
@@ -101,7 +119,7 @@ namespace Auction.Controllers
             }
 
             ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", tokenOrder.UserID);
-            ViewBag.Guid = new Guid().ToString();
+            
             return View(tokenOrder);
         }
 
@@ -118,7 +136,7 @@ namespace Auction.Controllers
                 return HttpNotFound();
             }
             ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", tokenOrder.UserID);
-            ViewBag.Guid = new Guid().ToString();
+            
             return View(tokenOrder);
         }
 
@@ -136,7 +154,7 @@ namespace Auction.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", tokenOrder.UserID);
-            ViewBag.Guid = new Guid().ToString();
+            
             return View(tokenOrder);
         }
 
@@ -152,7 +170,7 @@ namespace Auction.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Guid = new Guid().ToString();
+            
             return View(tokenOrder);
         }
 
@@ -164,7 +182,7 @@ namespace Auction.Controllers
             TokenOrder tokenOrder = db.TokenOrders.Find(id);
             db.TokenOrders.Remove(tokenOrder);
             db.SaveChanges();
-            ViewBag.Guid = new Guid().ToString();
+            
             return RedirectToAction("Index");
         }
 

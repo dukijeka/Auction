@@ -27,10 +27,32 @@ namespace Auction.Controllers
 
         public string Get(string clientid, string status)
         {
+
             TokenOrder tokenOrder;
 
-            tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
-            tokenOrder.State = "clientID";
+            try
+            {
+                tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
+            }
+            catch (Exception)
+            {
+
+                return "failed";
+            }
+
+            if (status != "success")
+            {
+                tokenOrder.State = "CANCELED";
+                // even though the transaction has failed, we have successfuly found the transaction
+                return "sucess!"; 
+            }
+           
+            tokenOrder.State = "COMPLETED";
+
+            // add Tokens to the user
+            AspNetUser user = tokenOrder.AspNetUser;
+            user.TokenBalance += tokenOrder.TokenCount;
+
             db.SaveChanges();
 
             return clientid;

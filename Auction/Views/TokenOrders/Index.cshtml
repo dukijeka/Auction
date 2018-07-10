@@ -4,7 +4,14 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Token Orders</h2>
+
+@if (ViewBag.User != null)
+{
+    <text>
+        Token balance: @ViewBag.User.TokenBalance
+    </text>
+}
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -30,6 +37,11 @@
     </tr>
 
 @foreach (var item in Model) {
+    if (ViewBag.User == null || item.AspNetUser.Id != ViewBag.User.Id)
+    {
+        continue;
+    }
+
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.AspNetUser.Email)

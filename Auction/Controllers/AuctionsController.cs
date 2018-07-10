@@ -12,6 +12,7 @@ using System.Web.Security;
 using System.Web.UI.WebControls;
 using AuctionsModel;
 using ImageUtilities;
+using Microsoft.AspNet.Identity;
 
 namespace Auction.Controllers
 {
@@ -32,6 +33,11 @@ namespace Auction.Controllers
             else
             {
                 ViewBag.DisplayAdminPanel = "visible";
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.User = db.AspNetUsers.Find(User.Identity.GetUserId());
             }
         }
 

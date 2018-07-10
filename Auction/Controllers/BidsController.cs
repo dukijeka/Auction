@@ -65,8 +65,8 @@ namespace Auction.Controllers
             // check if the user has enough tokens
             if (bid.AspNetUser.TokenBalance < Int32.Parse(tokensOffered))
             {
-                ViewBag.Error = "You don't have anough Tokens!";
-                return RedirectToAction("Index", "Auctions");
+                //ViewBag.Error = "You don't have anough Tokens!";
+                return RedirectToAction("Index", "Auctions", new { error = "You don't have anough Tokens!" });
             }
 
 
