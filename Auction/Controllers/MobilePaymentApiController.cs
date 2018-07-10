@@ -50,13 +50,14 @@ namespace Auction.Controllers
             }
 
              tokenOrder.State = "COMPLETED";
-            sendEmail(tokenOrder.AspNetUser.Email);
 
             // add Tokens to the user
             AspNetUser user = tokenOrder.AspNetUser;
             user.TokenBalance += tokenOrder.TokenCount;
 
             db.SaveChanges();
+
+            sendEmail(tokenOrder.AspNetUser.Email);
 
             return "success!";
 
