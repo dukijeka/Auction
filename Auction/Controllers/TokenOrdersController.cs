@@ -67,22 +67,16 @@ namespace Auction.Controllers
         //    return View(tokenOrder);
         //}
 
-        public void ProcessPayment(string clientid="", string reference="" )
+        public void ProcessPayment(string clientid, string status)
         {
             TokenOrder tokenOrder;
-            if (clientid != "")
-            {
-                tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
-                tokenOrder.State = "clientID";
-                db.SaveChanges();
-            }
+           
+            tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
+            tokenOrder.State = "clientID";
+            db.SaveChanges();
+            
 
-            if (reference != "")
-            {
-                tokenOrder = db.TokenOrders.Find(Guid.Parse(reference));
-                tokenOrder.State = "reference";
-                db.SaveChanges();
-            }
+            
         }
 
         [HttpPost]

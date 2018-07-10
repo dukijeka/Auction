@@ -45,7 +45,9 @@
         </td>
 
         <td>
-            <a id="c-mobile-payment-widget" href="http://stage.centili.com/payment/widget?apikey=7c1f43204c13d5f3e95e15019d012d88&country=rs&reference=@item.ID"><img src="https://www.centili.com/images/centili-widget-button.png" /></a>
+            @if (item.State != "COMPLETED") { 
+                <a id="c-mobile-payment-widget" href="http://stage.centili.com/payment/widget?apikey=7c1f43204c13d5f3e95e15019d012d88&country=rs&reference=@item.ID&returnurl=http://auctions20180708042230.azurewebsites.net/TokenOrders&price=@item.Price"><img src="https://www.centili.com/images/centili-widget-button.png" /></a>
+            }
         </td>
     </tr>
 }

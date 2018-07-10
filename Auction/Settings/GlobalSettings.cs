@@ -12,11 +12,11 @@ namespace Auction.Settings
             // default values
             N = 10;
             D = 60;
-            S = 20;
-            G = 50;
-            P = 70;
+            S = 10;
+            G = 20;
+            P = 40;
             C = "RSD";
-            T = 22;
+            T = 1;
         }
 
         // number of auctions to show
