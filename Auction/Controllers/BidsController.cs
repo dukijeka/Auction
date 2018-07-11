@@ -88,8 +88,8 @@ namespace Auction.Controllers
                 }
             } else
             {
-                // check if the new bid is greater than the intila price
-                if (bid.TokensOffered <= lastBid.TokensOffered)
+                // check if the new bid is greater than the initial price
+                if (bid.TokensOffered <= bid.Auction.StartingPrice)
                 {
 
                     return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the minimal price!" });

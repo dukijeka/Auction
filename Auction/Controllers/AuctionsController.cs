@@ -312,6 +312,8 @@ namespace Auction.Controllers
             Settings.GlobalSettings.T = tokenValue;
             Settings.GlobalSettings.C = currency;
 
+            Settings.GlobalSettings.SaveToFile();
+
             ViewBag.StatusMessage = "Success!";
             return RedirectToAction("AdminPanel");
         }
