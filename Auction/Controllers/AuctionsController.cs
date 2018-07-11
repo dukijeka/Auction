@@ -292,7 +292,9 @@ namespace Auction.Controllers
 
                 auction.State = "CLOSED";
                 auction.ClosedOn = DateTime.UtcNow;
-                db.SaveChanges(); 
+                db.SaveChanges();
+
+                Hubs.AuctionNotificaionsHub.SendSignalToClientsToCloseAuction(id);
             }
             return RedirectToAction("Index", db.Auctions.ToList());
         }

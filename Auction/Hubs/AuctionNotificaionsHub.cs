@@ -27,16 +27,17 @@ namespace Auction.Hubs
             hubContext.Clients.All.updateAuction(updateData);
         }
 
-        public void SendSignalToCLientsToCLoseAuction(Guid auctionID)
+        public static void SendSignalToClientsToCloseAuction(Guid auctionID)
         {
-            Clients.All.closeAuction(auctionID);
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<AuctionNotificaionsHub>();
+            hubContext.Clients.All.closeAuction(auctionID);
         }
 
         public void AuctionCloseRequest(Guid auctionID)
         {
             Controllers.AuctionsController auctionsController = new Controllers.AuctionsController();
             auctionsController.CloseAuction(auctionID);
-            SendSignalToCLientsToCLoseAuction(auctionID);
+            SendSignalToClientsToCloseAuction(auctionID);
         }
         
     }

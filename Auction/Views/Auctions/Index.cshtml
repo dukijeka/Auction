@@ -138,6 +138,9 @@
 
         $.connection.auctionNotificaionsHub.client.closeAuction = function (auctionID) {
             document.getElementById("state " + auctionID).innerHTML = "CLOSED";
+            document.getElementById("timer " + auctionID).innerHTML = "ENDED";
+            document.getElementById("bidButton " + auctionID).className += " disabled";
+            document.getElementById("bidButton " + auctionID).disabled = true;
         }
 
         function sqlToJsDate(sqlDate) {
