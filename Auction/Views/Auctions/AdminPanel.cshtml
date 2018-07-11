@@ -6,6 +6,16 @@
 
 <h2>Admin Panel</h2>
 
+@if (ViewBag.StatusMessage != null && ViewBag.StatusMessage != "")
+{
+    <p class="alert alert-success">@ViewBag.StatusMessage</p>
+}
+
+@if (ViewBag.ErrorMessage != null && ViewBag.ErrorMessage != "")
+{
+    <p class="alert alert-danger">@ViewBag.ErrorMessage</p>
+}
+
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -87,4 +97,54 @@
     }
 
 </table>
+
+<h2>Enironment Settings</h2>
+
+@using (@Html.BeginForm("ChangeEnvironmentSettings", "Auctions", FormMethod.Post)) { 
+@Html.AntiForgeryToken()
+
+<div class="form-group">
+    <label for="numberOfAuctions">Number of auctions per page:</label>
+    <input type="text" class="form-control" name="numberOfAuctions" id="numberOfAuctions" value="@Auction.Settings.GlobalSettings.N">
+</div>
+<div class="form-group">
+    <label for="duration">Default Auction Duration: </label>
+    <input type="number" min="1" class="form-control" id="duration" name="duration" value="@Auction.Settings.GlobalSettings.D">
+</div>
+<div class="form-group">
+    <label for="silver">Number of Tokens in Silver Package:</label>
+    <input type="number" min="1" class="form-control" name="silver" id="silver" value="@Auction.Settings.GlobalSettings.S">
+</div>
+<div class="form-group">
+    <label for="gold">Number of Tokens in Gold Package:</label>
+    <input type="number" min="1" class="form-control" name="gold" id="gold" value="@Auction.Settings.GlobalSettings.G">
+</div>
+<div class="form-group">
+    <label for="platinum">Number of Tokens in Platinum Package:</label>
+    <input type="number" min="1" class="form-control" name="platinum" id="platinum" value="@Auction.Settings.GlobalSettings.P">
+</div>
+<div class="form-group">
+    <label for="currency">Currency: </label>
+    @if (Auction.Settings.GlobalSettings.C == "RSD")
+    {
+        <select name="currency">
+            <option selected>RSD</option>
+            <option>EUR</option>
+        </select>
+    }
+    else
+    {
+        <select name="currency">
+            <option>RSD</option>
+            <option selected>EUR</option>
+        </select>
+    }
+</div>
+<div class="form-group">
+    <label for="tokenValue">Value of one Token:</label>
+    <input type="number" min="1" class="form-control" name="tokenValue" id="tokenValue" value="@Auction.Settings.GlobalSettings.T">
+</div>
+<button type="submit" class="btn btn-primary">Change</button>
+
+}
 

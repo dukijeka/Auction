@@ -297,6 +297,23 @@ namespace Auction.Controllers
             return RedirectToAction("Index", db.Auctions.ToList());
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeEnvironmentSettings(int numberOfAuctions, int duration, int silver, int gold, int platinum, string currency, double tokenValue)
+        {
+            Settings.GlobalSettings.N = numberOfAuctions;
+            Settings.GlobalSettings.D = duration;
+            Settings.GlobalSettings.S = silver;
+            Settings.GlobalSettings.G = gold;
+            Settings.GlobalSettings.P = platinum;
+            Settings.GlobalSettings.T = tokenValue;
+            Settings.GlobalSettings.C = currency;
+
+            ViewBag.StatusMessage = "Success!";
+            return RedirectToAction("AdminPanel");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

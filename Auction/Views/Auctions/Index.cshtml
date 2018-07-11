@@ -8,6 +8,11 @@
 
 <h2>Auctions</h2>
 
+@if (ViewBag.StatusMessage != null && ViewBag.StatusMessage != "")
+{
+    <p class="alert alert-success">@ViewBag.StatusMessage</p>
+}
+
 @if (User.Identity.IsAuthenticated && ViewBag.User != null)
 {
     <text>
@@ -21,7 +26,7 @@
     Auction Name: &nbsp; &nbsp;
     <input type="text" name="name" class="form-control col-1" />
     &nbsp; &nbsp;Minimal Price &nbsp; &nbsp;
-    <input type="number" name="minOffer" class="form-control col-1" min="0"  />
+    <input type="number" name="minOffer" class="form-control col-1" min="0" />
     &nbsp; &nbsp;Maximal Price&nbsp; &nbsp;
     <input type="number" name="maxOffer" class="form-control col-1" max="" /> &nbsp; &nbsp;
     <div class="form-group">
@@ -69,7 +74,7 @@
                 }
                 else
                 {
-                    <p class="card-text" >EXPIERED</p>
+                    <p class="card-text">EXPIERED</p>
                 }
                 <p class="card-text" id="state @item.AuctionID">State: @item.State</p>
                 <p class="card-text" id="price @item.AuctionID">@item.price</p>
@@ -115,7 +120,7 @@
 @section scripts {
     <script>
 
-        
+
 
         $.connection.hub.start();
 
