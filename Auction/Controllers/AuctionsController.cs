@@ -288,9 +288,13 @@ namespace Auction.Controllers
         public ActionResult OpenAuction(Guid id)
         {
             AuctionsModel.Auction auction = db.Auctions.Find(id);
-            auction.State = "OPENED";
-            auction.OppenedOn = DateTime.UtcNow;
-            db.SaveChanges();
+            if (auction.State == "READY")
+            {
+                
+                auction.State = "OPENED";
+                auction.OppenedOn = DateTime.UtcNow;
+                db.SaveChanges(); 
+            }
             return RedirectToAction("Index", db.Auctions.ToList());
         }
 

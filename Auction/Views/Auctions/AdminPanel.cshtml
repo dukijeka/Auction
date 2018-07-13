@@ -81,7 +81,7 @@
                 @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
                 @Html.ActionLink("Details", "Details", new { id = item.ID }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.ID }) |
-                @if (item.State == "READY" || item.State == "CLOSED")
+                @if (item.State == "READY")
                 {
                     @Html.ActionLink("Open", "OpenAuction", new { id = item.ID })
                 }
