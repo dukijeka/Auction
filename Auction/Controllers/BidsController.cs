@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AuctionsModel;
@@ -51,60 +52,74 @@ namespace Auction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "UserID,AuctionID,TimeOfBidding,TokensOffered")] Bid bid)
-        public ActionResult Create(String userID, Guid auctionID, String tokensOffered)
+        public async Task<ActionResult> Create(String userID, Guid auctionID, String tokensOffered)
         {
             // crate bid
             Bid bid = new Bid();
             bid.UserID = userID;
-            bid.AspNetUser = db.AspNetUsers.Find(userID);
-            bid.AuctionID = auctionID;
-            bid.Auction = db.Auctions.Find(auctionID);
-            bid.TimeOfBidding = DateTime.UtcNow;
-            bid.TokensOffered = Int32.Parse(tokensOffered);
-
-            // check if the user has enough tokens
-            if (bid.AspNetUser.TokenBalance < Int32.Parse(tokensOffered))
+            using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
             {
-                //ViewBag.Error = "You don't have anough Tokens!";
-                return RedirectToAction("Index", "Auctions", new { error = "You don't have anough Tokens!" });
-            }
-
-
-            // refund the last bidder(if exists)
-            Bid lastBid = db.Auctions.Find(auctionID).GetLatestBid();
-
-                // withdraw tokens
-                bid.AspNetUser.TokenBalance -= Int32.Parse(tokensOffered);
-
-            if (lastBid != null)
-            {
-                lastBid.AspNetUser.TokenBalance += lastBid.TokensOffered;
-
-                // check if the new bid is greater than the last
-                if (bid.TokensOffered <= lastBid.TokensOffered)
+                try
                 {
-                    ViewBag.Error = "A new bid must be greater than the last one!";
-                    return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the last one!" });
+                    bid.AspNetUser = db.AspNetUsers.Find(userID);
+                    bid.AuctionID = auctionID;
+                    bid.Auction = db.Auctions.Find(auctionID);
+                    bid.TimeOfBidding = DateTime.UtcNow;
+                    bid.TokensOffered = Int32.Parse(tokensOffered);
+
+                    // check if the user has enough tokens
+                    if (bid.AspNetUser.TokenBalance < Int32.Parse(tokensOffered))
+                    {
+                        //ViewBag.Error = "You don't have anough Tokens!";
+                        return RedirectToAction("Index", "Auctions", new { error = "You don't have anough Tokens!" });
+                    }
+
+
+                    // refund the last bidder(if exists)
+                    Bid lastBid = db.Auctions.Find(auctionID).GetLatestBid();
+
+                    // withdraw tokens
+                    bid.AspNetUser.TokenBalance -= Int32.Parse(tokensOffered);
+
+                    if (lastBid != null)
+                    {
+                        lastBid.AspNetUser.TokenBalance += lastBid.TokensOffered;
+
+                        // check if the new bid is greater than the last
+                        if (bid.TokensOffered <= lastBid.TokensOffered)
+                        {
+                            ViewBag.Error = "A new bid must be greater than the last one!";
+                            return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the last one!" });
+                        }
+                    }
+                    else
+                    {
+                        // check if the new bid is greater than the initial price
+                        if (bid.TokensOffered <= bid.Auction.StartingPrice)
+                        {
+
+                            return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the minimal price!" });
+
+                        }
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        db.Bids.Add(bid);
+                        await db.SaveChangesAsync();
+                        transaction.Commit();
+
+                        // alert other users
+                        Hubs.AuctionNotificaionsHub.UpdateClientAuctions(auctionID.ToString(), Int32.Parse(tokensOffered), bid.AspNetUser.UserName);
+                        return RedirectToAction("Index", "Auctions");
+                    }
                 }
-            } else
-            {
-                // check if the new bid is greater than the initial price
-                if (bid.TokensOffered <= bid.Auction.StartingPrice)
+                catch (Exception)
                 {
 
-                    return RedirectToAction("Index", "Auctions", new { error = "A new bid must be greater than the minimal price!" });
-
+                    transaction.Rollback();
+                    return RedirectToAction("Index", "Auctions");
                 }
-            }
-
-            if (ModelState.IsValid)
-            {
-                db.Bids.Add(bid);
-                db.SaveChanges();
-
-                // alert other users
-                Hubs.AuctionNotificaionsHub.UpdateClientAuctions(auctionID.ToString(), Int32.Parse(tokensOffered), bid.AspNetUser.UserName);
-                return RedirectToAction("Index", "Auctions");
             }
 
             ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", bid.UserID);
@@ -113,21 +128,21 @@ namespace Auction.Controllers
         }
 
         // GET: Bids/Edit/5
-        public ActionResult Edit(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Bid bid = db.Bids.Find(id);
-            if (bid == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", bid.UserID);
-            ViewBag.AuctionID = new SelectList(db.Auctions, "ID", "Name", bid.AuctionID);
-            return View(bid);
-        }
+        //public ActionResult Edit(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Bid bid = db.Bids.Find(id);
+        //    if (bid == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", bid.UserID);
+        //    ViewBag.AuctionID = new SelectList(db.Auctions, "ID", "Name", bid.AuctionID);
+        //    return View(bid);
+        //}
 
         // POST: Bids/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
