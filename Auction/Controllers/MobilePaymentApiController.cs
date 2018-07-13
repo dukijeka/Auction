@@ -45,6 +45,8 @@ namespace Auction.Controllers
             if (status != "success")
             {
                 tokenOrder.State = "CANCELED";
+                db.SaveChanges();
+
                 // even though the transaction has failed, we have successfuly found the transaction
                 return "sucess!"; 
             }
