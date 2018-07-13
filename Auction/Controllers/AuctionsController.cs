@@ -228,19 +228,19 @@ namespace Auction.Controllers
         }
 
         // GET: Auctions/Edit/5
-        public ActionResult Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            AuctionsModel.Auction auction = db.Auctions.Find(id);
-            if (auction == null)
-            {
-                return HttpNotFound();
-            }
-            return View(auction);
-        }
+        //public ActionResult Edit(Guid? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    AuctionsModel.Auction auction = db.Auctions.Find(id);
+        //    if (auction == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(auction);
+        //}
 
         // POST: Auctions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
