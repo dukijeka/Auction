@@ -245,18 +245,18 @@ namespace Auction.Controllers
         // POST: Auctions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Image,Duration,StartingPrice,CreatedOn,OppenedOn,ClosedOn,State")] AuctionsModel.Auction auction)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(auction).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(auction);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "ID,Name,Image,Duration,StartingPrice,CreatedOn,OppenedOn,ClosedOn,State")] AuctionsModel.Auction auction)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(auction).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(auction);
+        //}
 
         // GET: Auctions/Delete/5
         public ActionResult Delete(Guid? id)
