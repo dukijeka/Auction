@@ -42,9 +42,13 @@ namespace Auction.Controllers
         }
 
         // GET: Auctions
-        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED", string error = "")
+        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED", string error = "", int page = 1)
         {
-
+            page--;
+            if (page < 0)
+            {
+                page = 0;
+            }
 
             ViewBag.Error = error;
             
@@ -54,7 +58,7 @@ namespace Auction.Controllers
 
             List<ViewModels.AuctionBid> auctionsBids = new List<ViewModels.AuctionBid>();
 
-            int shownAuctions = 0;
+            int auctionsIndex = 0;
 
             if (state == "")
             {
@@ -69,11 +73,17 @@ namespace Auction.Controllers
                     CloseAuction(auction.ID);
                 }
 
-                shownAuctions++;
-                if (shownAuctions > Settings.GlobalSettings.N)
-                {
-                    break;
-                }
+               
+                //// pagination
+                //if (auctionsIndex < page * Settings.GlobalSettings.N)
+                //{
+                //    continue;
+                //}
+
+                //if (auctionsIndex >= Settings.GlobalSettings.N * (page + 1))
+                //{
+                //    break;
+                //}
 
                 Bid latestBid = auction.GetLatestBid();
 
@@ -132,9 +142,13 @@ namespace Auction.Controllers
                 }
 
                 auctionsBids.Add(auctionBid);
+
+                auctionsIndex++;
             }
+
+            ViewBag.NumberOfPages = Math.Ceiling((decimal)auctionsBids.Count / Settings.GlobalSettings.N);
             //return View(db.Auctions.ToList());
-            return View(auctionsBids.OrderBy(a => a.OppenedOn.AddSeconds(a.Duration)).ToList());
+            return View(auctionsBids.OrderBy(a => a.OppenedOn.AddSeconds(a.Duration)).ToList().Skip(page * Settings.GlobalSettings.N).Take(Settings.GlobalSettings.N));
         }
 
         [Authorize(Roles = "Admin")]

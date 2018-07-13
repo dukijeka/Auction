@@ -57,7 +57,7 @@
             <td>
                 @*Html.DisplayFor(modelItem => item.Image)*@
                 @*<asp:Image ID="Image1" runat="server" ImageUrl="~/ShowImage.ashx?id=@item.ID" Height="150px" Width="165px" />*@
-                <img src="/ShowImage.ashx?id=@item.ID" />
+                <img src="/ShowImage.ashx?id=@item.ID" alt="Image Not Available"/>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Duration)

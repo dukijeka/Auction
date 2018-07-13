@@ -117,6 +117,15 @@
     }
 </div>
 
+<ul class="pagination justify-content-center" style="margin:20px 0">
+    @for (int i = 0; i < ViewBag.NumberOfPages; i++)
+    {
+
+        <li class="page-item"><a class="page-link" href="javascript:changePageNumber(@(i+1));">@(i + 1)</a></li>
+
+    }
+</ul>   
+
 @section scripts {
     <script>
 
@@ -242,6 +251,27 @@
 
     }
 
+        function findGetParameter(parameterName) {
+            var result = null,
+                tmp = [];
+            var items = location.search.substr(1).split("&");
+            for (var index = 0; index < items.length; index++) {
+                tmp = items[index].split("=");
+                if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+            }
+            return result;
+        }
+
+        function changePageNumber(newPageNumber) {
+            var oldPageNumber = findGetParameter("page");
+            if (oldPageNumber == null) {
+                var newParameters = document.location.search + "&page=" + newPageNumber;
+            } else {
+                var newParameters = document.location.search.replace("page=" + oldPageNumber, "page=" + newPageNumber);
+            }
+
+            window.location = location.protocol + '//' + location.host + location.pathname + newParameters;
+        }
 
     </script>
 }
