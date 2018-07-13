@@ -32,34 +32,48 @@ namespace Auction.Controllers
             TokenOrder tokenOrder;
 
 
-            try
+            using (var transaction = db.Database.BeginTransaction())
             {
-                tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
+                try
+                {
+                    try
+                    {
+                        tokenOrder = db.TokenOrders.Find(Guid.Parse(clientid));
+                    }
+                    catch (Exception)
+                    {
+
+                        return "failed";
+                    }
+
+                    if (status != "success")
+                    {
+                        tokenOrder.State = "CANCELED";
+                        db.SaveChanges();
+                        transaction.Commit();
+
+                        // even though the transaction has failed, we have successfuly found the transaction
+                        return "sucess!";
+                    }
+
+                    tokenOrder.State = "COMPLETED";
+
+                    // add Tokens to the user
+                    AspNetUser user = tokenOrder.AspNetUser;
+                    user.TokenBalance += tokenOrder.TokenCount;
+
+                    db.SaveChanges();
+                    transaction.Commit();
+
+                    sendEmail(tokenOrder.AspNetUser.Email);
+                }
+                catch (Exception)
+                {
+
+                    transaction.Rollback();
+                    return "failed!";
+                }
             }
-            catch (Exception)
-            {
-
-                return "failed";
-            }
-
-            if (status != "success")
-            {
-                tokenOrder.State = "CANCELED";
-                db.SaveChanges();
-
-                // even though the transaction has failed, we have successfuly found the transaction
-                return "sucess!"; 
-            }
-
-             tokenOrder.State = "COMPLETED";
-
-            // add Tokens to the user
-            AspNetUser user = tokenOrder.AspNetUser;
-            user.TokenBalance += tokenOrder.TokenCount;
-
-            db.SaveChanges();
-
-            sendEmail(tokenOrder.AspNetUser.Email);
 
             return "success!";
 
