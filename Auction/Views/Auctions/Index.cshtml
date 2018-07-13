@@ -38,10 +38,13 @@
             <option>CLOSED</option>
         </select>
     </div>
+    <input type="checkbox" name="transactionsIWon" /> Transaction I Won*
     &nbsp; &nbsp;
     <button class="btn btn-primary" type="submit">Search</button>
 
 </form>
+
+<i>* Note: Selecting "Transactions I Won" will ignore state and set it to "CLOSED"</i>
 
 
 @if (Request.IsAuthenticated)

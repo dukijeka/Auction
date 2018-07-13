@@ -42,7 +42,7 @@ namespace Auction.Controllers
         }
 
         // GET: Auctions
-        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED", string error = "", int page = 1)
+        public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED", string error = "", int page = 1, string transactionsIWon = "off")
         {
             page--;
             if (page < 0)
@@ -60,6 +60,11 @@ namespace Auction.Controllers
 
             int auctionsIndex = 0;
 
+            if (transactionsIWon == "on")
+            {
+                state = "CLOSED";
+            }
+
             if (state == "")
             {
                 state = "OPENED";
@@ -71,6 +76,21 @@ namespace Auction.Controllers
                 if (auction.OppenedOn.AddSeconds(auction.Duration) <= DateTime.UtcNow && auction.State == "OPENED")
                 {
                     CloseAuction(auction.ID);
+                }
+
+                Bid latestBid = auction.GetLatestBid();
+
+                // this use couldn't have won ths transaction because there were no bids
+                if (transactionsIWon == "on" && latestBid == null)
+                {
+                    continue;
+                }
+
+                // latest bid can't be null here
+                if (transactionsIWon == "on" 
+                    && latestBid.AspNetUser.Id != User.Identity.GetUserId())
+                {
+                    continue;
                 }
 
                
@@ -85,7 +105,6 @@ namespace Auction.Controllers
                 //    break;
                 //}
 
-                Bid latestBid = auction.GetLatestBid();
 
                 decimal latestOffer = latestBid == null ? auction.StartingPrice : latestBid.TokensOffered;
 
@@ -118,7 +137,7 @@ namespace Auction.Controllers
                     }
                 }
 
-                if (auction.State != state) {
+                if (state != "" && auction.State != state) {
                         continue;
                 }
 
