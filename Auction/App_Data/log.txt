@@ -2,3 +2,21 @@
  ------------------------------------ 
 7/14/2018 1:09:48 PM ----> Auction index started
 7/14/2018 1:09:49 PM ----> auctions index finished, showing view
+ ------------------------------------ 
+7/14/2018 3:19:03 PM ----> Auction index started
+7/14/2018 3:19:04 PM ----> auctions index finished, showing view
+7/14/2018 3:29:50 PM ----> Auction index started
+7/14/2018 3:29:51 PM ----> auctions index finished, showing view
+7/14/2018 3:30:07 PM ----> auction created, id = 9b35926d-2dd0-4b1b-90b4-2ac48158162b
+7/14/2018 3:30:07 PM ----> Auction index started
+7/14/2018 3:30:08 PM ----> auctions index finished, showing view
+7/14/2018 3:30:14 PM ----> showing admin panel
+7/14/2018 3:30:22 PM ----> auction 88f19844-f26a-497e-9abf-02dc50d87ad5oppened
+7/14/2018 3:30:22 PM ----> Auction index started
+7/14/2018 3:30:22 PM ----> auctions index finished, showing view
+7/14/2018 3:30:34 PM ----> Auction index started
+7/14/2018 3:30:34 PM ----> auctions index finished, showing view
+7/14/2018 3:30:37 PM ----> creating bid started
+7/14/2018 3:30:38 PM ----> bid successfully created by 6b8d1c41-8b2c-4a16-abea-8f0087a9e66f for auction: 88f19844-f26a-497e-9abf-02dc50d87ad5
+7/14/2018 3:30:38 PM ----> Auction index started
+7/14/2018 3:30:38 PM ----> auctions index finished, showing view
