@@ -89,7 +89,7 @@
                 {
                     <p class="card-text" id="user @item.AuctionID"></p>
                 }
-                @using (Html.BeginForm("Create", "Bids"))
+                @using (Html.BeginForm("Create", "Bids", FormMethod.Post, new { id = "form " + item.AuctionID }))
                 {
                     @Html.AntiForgeryToken()
 
@@ -141,9 +141,12 @@
             document.getElementById("user " + updateData.auctionID).innerHTML = updateData.userPosted;
             document.getElementById("price " + updateData.auctionID).innerHTML = updateData.newBidAmount;
             document.getElementById("price " + updateData.auctionID).className += " bg-danger text-white";
-            var offerInput = $("offerInput " + updateData.auctionID);
-            offerInput.attr('value', "" + Number(updateData.newBidAmount) + 1);
-            offerInput.attr('min', "" + Number(updateData.newBidAmount) + 1);
+            var form = document.getElementById("form " + updateData.auctionID);//$("form " + updateData.auctionID);
+            var offerInput = form.elements['offerInput ' + updateData.auctionID];
+            offerInput.attributes.value = "" + (Number(updateData.newBidAmount) + 1);
+            offerInput.attributes.min = "" + (Number(updateData.newBidAmount) + 1);
+            //offerInput.attr('value', "" + Number(updateData.newBidAmount) + 1);
+            //offerInput.attr('min', "" + Number(updateData.newBidAmount) + 1);
             //document.getElementById("offerInput " + updateData.auctionID).val = Number(updateData.newBidAmount) + 1;
             //document.getElementById("offerInput " + updateData.auctionID).min = Number(updateData.newBidAmount) + 1;
         };
