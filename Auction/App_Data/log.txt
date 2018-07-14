@@ -1,0 +1,4 @@
+﻿7/14/2018 12:41:57 PM ----> Auction index shown
+ ------------------------------------ 
+7/14/2018 1:09:48 PM ----> Auction index started
+7/14/2018 1:09:49 PM ----> auctions index finished, showing view

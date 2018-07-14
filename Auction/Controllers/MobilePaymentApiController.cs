@@ -42,7 +42,7 @@ namespace Auction.Controllers
                     }
                     catch (Exception)
                     {
-
+                        Logger.Logger.log("api called with wrong tokenOrders ID");
                         return "failed";
                     }
 
@@ -51,7 +51,7 @@ namespace Auction.Controllers
                         tokenOrder.State = "CANCELED";
                         db.SaveChanges();
                         transaction.Commit();
-
+                        Logger.Logger.log("token order canceled or failed");
                         // even though the transaction has failed, we have successfuly found the transaction
                         return "sucess!";
                     }
@@ -64,12 +64,12 @@ namespace Auction.Controllers
 
                     db.SaveChanges();
                     transaction.Commit();
-
+                    Logger.Logger.log("token order completed");
                     sendEmail(tokenOrder.AspNetUser.Email);
                 }
                 catch (Exception)
                 {
-
+                    Logger.Logger.log("api db transaction rollback");
                     transaction.Rollback();
                     return "failed!";
                 }
@@ -111,7 +111,16 @@ namespace Auction.Controllers
                 smtp.UseDefaultCredentials = true;
                 smtp.Credentials = NetworkCred;
                 smtp.Port = 587;           //smtp gmail port no.
-                smtp.Send(mm);
+                try
+                {
+                    smtp.Send(mm);
+                }
+                catch (Exception e)
+                {
+
+                    Logger.Logger.log("email sending failed! Exception message: " + e.Message);
+                }
+                Logger.Logger.log("email sent");
             }
         }
         // POST api/<controller>

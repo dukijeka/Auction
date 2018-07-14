@@ -44,6 +44,7 @@ namespace Auction.Controllers
         // GET: Auctions
         public ActionResult Index(int? minOffer, int? maxOffer, string name = "", string state = "OPENED", string error = "", int page = 1, string transactionsIWon = "off")
         {
+            Logger.Logger.log("Auction index started");
             page--;
             if (page < 0)
             {
@@ -167,6 +168,7 @@ namespace Auction.Controllers
 
             ViewBag.NumberOfPages = Math.Ceiling((decimal)auctionsBids.Count / Settings.GlobalSettings.N);
             //return View(db.Auctions.ToList());
+            Logger.Logger.log("auctions index finished, showing view");
             return View(auctionsBids.OrderBy(a => a.OppenedOn.AddSeconds(a.Duration)).ToList().Skip(page * Settings.GlobalSettings.N).Take(Settings.GlobalSettings.N));
         }
 
@@ -183,7 +185,7 @@ namespace Auction.Controllers
                     CloseAuction(auction.ID);
                 }
             }
-
+            Logger.Logger.log("showing admin panel");
             return View(auctions);
         }
 
@@ -197,8 +199,10 @@ namespace Auction.Controllers
             AuctionsModel.Auction auction = db.Auctions.Find(id);
             if (auction == null)
             {
+                Logger.Logger.log("auction details not shown, auction " + id.ToString() + "not found");
                 return HttpNotFound();
             }
+            Logger.Logger.log("showing auction: " + id.ToString());
             return View(auction);
         }
 
@@ -240,6 +244,7 @@ namespace Auction.Controllers
             {
                 db.Auctions.Add(auction);
                 db.SaveChanges();
+                Logger.Logger.log("auction created, id = " + auction.ID.ToString());
                 return RedirectToAction("Index");
             }
 
@@ -287,8 +292,10 @@ namespace Auction.Controllers
             AuctionsModel.Auction auction = db.Auctions.Find(id);
             if (auction == null)
             {
+                Logger.Logger.log("auction dnot deleted, auction " + id.ToString() + "not found");
                 return HttpNotFound();
             }
+            Logger.Logger.log("auction deleted");
             return View(auction);
         }
 
@@ -309,7 +316,7 @@ namespace Auction.Controllers
             AuctionsModel.Auction auction = db.Auctions.Find(id);
             if (auction.State == "READY")
             {
-                
+                Logger.Logger.log("auction " + id.ToString() + "oppened");
                 auction.State = "OPENED";
                 auction.OppenedOn = DateTime.UtcNow;
                 db.SaveChanges(); 
@@ -319,7 +326,7 @@ namespace Auction.Controllers
 
         public ActionResult CloseAuction(Guid id)
         {
-
+            
             AuctionsModel.Auction auction = db.Auctions.Find(id);
 
             // close only if the auction has expiered or if the user is admin
@@ -329,10 +336,12 @@ namespace Auction.Controllers
 
                 auction.State = "CLOSED";
                 auction.ClosedOn = DateTime.UtcNow;
+                Logger.Logger.log("auction: " + auction.ID + " closed");
                 db.SaveChanges();
 
                 Hubs.AuctionNotificaionsHub.SendSignalToClientsToCloseAuction(id);
             }
+
             return RedirectToAction("Index", db.Auctions.ToList());
         }
 
@@ -352,6 +361,7 @@ namespace Auction.Controllers
             Settings.GlobalSettings.SaveToFile();
 
             ViewBag.StatusMessage = "Success!";
+            Logger.Logger.log("environment settings changed");
             return RedirectToAction("AdminPanel");
         }
 

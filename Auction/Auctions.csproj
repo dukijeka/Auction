@@ -221,6 +221,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\AuctionNotificaionsHub.cs" />
+    <Compile Include="Logger\Logger.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="ViewModels\AuctionBid.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\log.txt" />
     <Content Include="App_Data\Resources\imageNotAvailable.png" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />

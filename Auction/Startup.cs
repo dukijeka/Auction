@@ -16,6 +16,9 @@ namespace Auction
 
             // for signalR
             app.MapSignalR();
+
+            // start a new log 
+            Logger.Logger.newLog();
         }
     }
 }
